@@ -1,6 +1,10 @@
 package com.clovisleoncio.gameoflife;
 
-import java.util.Random;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Hello world!
@@ -8,12 +12,10 @@ import java.util.Random;
  */
 public class App {
 	
-	private static final int LINES = 20;
-	private static final int COLUMNS = 30;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		
-		boolean[][] ecossystem = createRandomEcossystem();
+		boolean[][] ecossystem = readEcossystem();
 
 		print(ecossystem);
 		
@@ -21,8 +23,27 @@ public class App {
 			System.out.println("----------");
 			ecossystem = applyRules(ecossystem);
 			print(ecossystem);
+			Thread.sleep(500);
 		}
 		
+	}
+
+	private static boolean[][] readEcossystem() throws IOException {
+		
+		BufferedReader in = new BufferedReader(new InputStreamReader(App.class.getResourceAsStream("/gol.in")));
+		
+		List<boolean[]> ecossystem = new ArrayList<boolean[]>();
+		
+		String readLine;
+		while ( (readLine = in.readLine()) != null ) {
+			boolean[] line = new boolean[readLine.length()];
+			for (int i = 0; i < line.length; i++) {
+				line[i] = readLine.charAt(i) == '*';
+			}
+			ecossystem.add(line);
+		}
+		
+		return ecossystem.toArray(new boolean[0][0]);
 	}
 
 	private static boolean[][] applyRules(boolean[][] ecossystem) {
@@ -83,16 +104,4 @@ public class App {
 		}
 	}
 
-	private static boolean[][] createRandomEcossystem() {
-		
-		Random random = new Random();		
-		
-		boolean[][] ecossystem = new boolean[LINES][COLUMNS];
-		for (int i = 0; i < ecossystem.length; i++) {
-			for (int j = 0; j < ecossystem[i].length; j++) {
-				ecossystem[i][j] = random.nextBoolean();
-			}
-		}
-		return ecossystem;
-	}
 }
